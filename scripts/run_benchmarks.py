@@ -50,6 +50,50 @@ def ensure_go_built() -> None:
     )
 
 
+def ensure_csharp_built() -> None:
+    csharp_dir = ROOT / "csharp"
+    subprocess.run(
+        ["dotnet", "build", "-c", "Release"],
+        cwd=csharp_dir,
+        check=True,
+    )
+
+
+def ensure_csharp_pool_built() -> None:
+    csharp_dir = ROOT / "csharp-pool"
+    subprocess.run(
+        ["dotnet", "build", "-c", "Release"],
+        cwd=csharp_dir,
+        check=True,
+    )
+
+
+def ensure_csharp_array_built() -> None:
+    csharp_dir = ROOT / "csharp-array"
+    subprocess.run(
+        ["dotnet", "build", "-c", "Release"],
+        cwd=csharp_dir,
+        check=True,
+    )
+
+
+def ensure_csharp_unsafe_built() -> None:
+    csharp_dir = ROOT / "csharp-unsafe"
+    subprocess.run(
+        ["dotnet", "build", "-c", "Release"],
+        cwd=csharp_dir,
+        check=True,
+    )
+
+
+def ensure_csharp_stackonly_built() -> None:
+    csharp_dir = ROOT / "csharp-stackonly"
+    subprocess.run(
+        ["dotnet", "build", "-c", "Release"],
+        cwd=csharp_dir,
+        check=True,
+    )
+
 def ensure_rust_built() -> None:
     rust_dir = ROOT / "rust"
     env = os.environ.copy()
@@ -161,6 +205,11 @@ def main() -> int:
 
     ensure_go_built()
     ensure_java_compiled()
+    ensure_csharp_built()
+    ensure_csharp_pool_built()
+    ensure_csharp_array_built()
+    ensure_csharp_unsafe_built()
+    ensure_csharp_stackonly_built()
     ensure_rust_built()
 
     go_cache = ROOT / "go" / ".gocache"
@@ -172,6 +221,31 @@ def main() -> int:
             cwd=ROOT / "go",
             template=["./binarytrees", "{n}"],
             env=go_env,
+        ),
+        Target(
+            name="C#",
+            cwd=ROOT / "csharp",
+            template=["dotnet", "bin/Release/net8.0/BinaryTrees.dll", "{n}"],
+        ),
+        Target(
+            name="C# Pool",
+            cwd=ROOT / "csharp-pool",
+            template=["dotnet", "bin/Release/net8.0/BinaryTrees.dll", "{n}"],
+        ),
+        Target(
+            name="C# Array",
+            cwd=ROOT / "csharp-array",
+            template=["dotnet", "bin/Release/net8.0/BinaryTrees.dll", "{n}"],
+        ),
+        Target(
+            name="C# Unsafe",
+            cwd=ROOT / "csharp-unsafe",
+            template=["dotnet", "bin/Release/net8.0/BinaryTrees.dll", "{n}"],
+        ),
+        Target(
+            name="C# StackOnly",
+            cwd=ROOT / "csharp-stackonly",
+            template=["dotnet", "bin/Release/net8.0/BinaryTrees.dll", "{n}"],
         ),
         Target(
             name="Java",

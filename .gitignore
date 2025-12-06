@@ -17,6 +17,10 @@ go/.gocache/
 # Rust target directory
 rust/target/
 
+# C# / .NET build artifacts
+bin/
+obj/
+
 # Matplotlib cache & generated figures
 .cache/
 figures/

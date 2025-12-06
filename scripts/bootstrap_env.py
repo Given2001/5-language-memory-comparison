@@ -20,6 +20,11 @@ def main() -> int:
     run(["npm", "install"], ROOT / "nodejs")
     run(["go", "mod", "download"], ROOT / "go")
     run(["cargo", "fetch"], ROOT / "rust")
+    run(["dotnet", "restore"], ROOT / "csharp")
+    run(["dotnet", "restore"], ROOT / "csharp-pool")
+    run(["dotnet", "restore"], ROOT / "csharp-array")
+    run(["dotnet", "restore"], ROOT / "csharp-unsafe")
+    run(["dotnet", "restore"], ROOT / "csharp-stackonly")
     return 0
 
 
