@@ -18,8 +18,9 @@ go/.gocache/
 rust/target/
 
 # C# / .NET build artifacts
-bin/
-obj/
+csharp*/bin/
+csharp*/obj/
+csharp*/publish/
 
 # Matplotlib cache & generated figures
 .cache/

@@ -94,6 +94,16 @@ def ensure_csharp_stackonly_built() -> None:
         check=True,
     )
 
+
+def ensure_csharp_aot_built() -> None:
+    csharp_dir = ROOT / "csharp-aot"
+    subprocess.run(
+        ["dotnet", "publish", "-c", "Release", "-o", "publish"],
+        cwd=csharp_dir,
+        check=True,
+    )
+
+
 def ensure_rust_built() -> None:
     rust_dir = ROOT / "rust"
     env = os.environ.copy()
@@ -146,9 +156,7 @@ def run_measurement(
     )
 
     if not json_file.exists():
-        raise RuntimeError(
-            f"测量脚本未写入结果文件，语言={target.name}, 深度={depth}"
-        )
+        raise RuntimeError(f"测量脚本未写入结果文件，语言={target.name}, 深度={depth}")
 
     raw = json_file.read_text(encoding="utf-8").strip()
     json_file.unlink(missing_ok=True)
@@ -184,12 +192,14 @@ def format_table(rows: List[Dict[str, float]]) -> str:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="批量运行所有语言的 binary-trees 基准。")
+    parser = argparse.ArgumentParser(
+        description="批量运行所有语言的 binary-trees 基准。"
+    )
     parser.add_argument(
         "--depths",
         type=int,
         nargs="+",
-        default=[10, 16],
+        default=[10, 16, 20, 24],
         help="需要测试的最大树深度列表（默认：10 16）。",
     )
     parser.add_argument(
@@ -206,6 +216,7 @@ def main() -> int:
     ensure_go_built()
     ensure_java_compiled()
     ensure_csharp_built()
+    ensure_csharp_aot_built()
     ensure_csharp_pool_built()
     ensure_csharp_array_built()
     ensure_csharp_unsafe_built()
@@ -226,6 +237,11 @@ def main() -> int:
             name="C#",
             cwd=ROOT / "csharp",
             template=["dotnet", "bin/Release/net8.0/BinaryTrees.dll", "{n}"],
+        ),
+        Target(
+            name="C# AOT",
+            cwd=ROOT / "csharp-aot",
+            template=["./publish/BinaryTrees", "{n}"],
         ),
         Target(
             name="C# Pool",
@@ -252,16 +268,16 @@ def main() -> int:
             cwd=ROOT / "java",
             template=["java", "BinaryTrees", "{n}"],
         ),
-        Target(
-            name="Node.js",
-            cwd=ROOT / "nodejs",
-            template=["node", "main.js", "{n}"],
-        ),
-        Target(
-            name="Python",
-            cwd=ROOT / "python",
-            template=[sys.executable, "main.py", "{n}"],
-        ),
+        # Target(
+        #     name="Node.js",
+        #     cwd=ROOT / "nodejs",
+        #     template=["node", "main.js", "{n}"],
+        # ),
+        # Target(
+        #     name="Python",
+        #     cwd=ROOT / "python",
+        #     template=[sys.executable, "main.py", "{n}"],
+        # ),
         Target(
             name="Rust",
             cwd=ROOT / "rust",
